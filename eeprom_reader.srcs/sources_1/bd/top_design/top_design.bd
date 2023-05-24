@@ -1,0 +1,132 @@
+{
+  "design": {
+    "design_info": {
+      "boundary_crc": "0x47BBB90C9ACF35E0",
+      "device": "xc7s50csga324-1",
+      "gen_directory": "../../../../eeprom_reader.gen/sources_1/bd/top_design",
+      "name": "top_design",
+      "rev_ctrl_bd_flag": "RevCtrlBdOff",
+      "synth_flow_mode": "None",
+      "tool_version": "2022.2",
+      "validated": "true"
+    },
+    "design_tree": {
+      "top": "",
+      "xlconstant_0": ""
+    },
+    "ports": {
+      "BTN_0": {
+        "direction": "I"
+      },
+      "CLK": {
+        "type": "clk",
+        "direction": "I",
+        "parameters": {
+          "CLK_DOMAIN": {
+            "value": "top_design_CLK_0",
+            "value_src": "default"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default"
+          },
+          "FREQ_TOLERANCE_HZ": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "PHASE": {
+            "value": "0.0",
+            "value_src": "default"
+          }
+        }
+      },
+      "LED": {
+        "direction": "O",
+        "left": "3",
+        "right": "0"
+      },
+      "dout": {
+        "direction": "O",
+        "left": "1",
+        "right": "0"
+      }
+    },
+    "components": {
+      "top": {
+        "vlnv": "xilinx.com:module_ref:top:1.0",
+        "xci_name": "top_design_top_0_0",
+        "xci_path": "ip\\top_design_top_0_0\\top_design_top_0_0.xci",
+        "inst_hier_path": "top",
+        "reference_info": {
+          "ref_type": "hdl",
+          "ref_name": "top",
+          "boundary_crc": "0x0"
+        },
+        "ports": {
+          "CLK": {
+            "type": "clk",
+            "direction": "I",
+            "parameters": {
+              "CLK_DOMAIN": {
+                "value": "top_design_CLK_0",
+                "value_src": "default_prop"
+              }
+            }
+          },
+          "LED": {
+            "direction": "O",
+            "left": "3",
+            "right": "0"
+          },
+          "BTN": {
+            "direction": "I"
+          }
+        }
+      },
+      "xlconstant_0": {
+        "vlnv": "xilinx.com:ip:xlconstant:1.1",
+        "xci_name": "top_design_xlconstant_0_2",
+        "xci_path": "ip\\top_design_xlconstant_0_2\\top_design_xlconstant_0_2.xci",
+        "inst_hier_path": "xlconstant_0",
+        "parameters": {
+          "CONST_VAL": {
+            "value": "2"
+          },
+          "CONST_WIDTH": {
+            "value": "2"
+          }
+        }
+      }
+    },
+    "nets": {
+      "BTN_0_1": {
+        "ports": [
+          "BTN_0",
+          "top/BTN"
+        ]
+      },
+      "CLK_0_1": {
+        "ports": [
+          "CLK",
+          "top/CLK"
+        ]
+      },
+      "top_0_LED": {
+        "ports": [
+          "top/LED",
+          "LED"
+        ]
+      },
+      "xlconstant_0_dout": {
+        "ports": [
+          "xlconstant_0/dout",
+          "dout"
+        ]
+      }
+    }
+  }
+}

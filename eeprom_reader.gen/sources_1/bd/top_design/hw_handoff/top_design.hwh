@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Wed May 24 01:37:18 2023" VIVADOVERSION="2022.2">
+
+  <SYSTEMINFO ARCH="spartan7" BOARD="digilentinc.com:arty-s7-50:part0:1.0" DEVICE="7s50" NAME="top_design" PACKAGE="csga324" SPEEDGRADE="-1"/>
+
+  <EXTERNALPORTS>
+    <PORT DIR="I" NAME="BTN_0" SIGIS="undef" SIGNAME="External_Ports_BTN_0">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="top" PORT="BTN"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT CLKFREQUENCY="100000000" DIR="I" NAME="CLK" SIGIS="clk" SIGNAME="External_Ports_CLK">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="top" PORT="CLK"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" LEFT="3" NAME="LED" RIGHT="0" SIGIS="undef" SIGNAME="top_LED">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="top" PORT="LED"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" LEFT="1" NAME="dout" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_0_dout">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="xlconstant_0" PORT="dout"/>
+      </CONNECTIONS>
+    </PORT>
+  </EXTERNALPORTS>
+
+  <EXTERNALINTERFACES/>
+
+  <MODULES>
+    <MODULE COREREVISION="1" FULLNAME="/top" HWVERSION="1.0" INSTANCE="top" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="top" VLNV="xilinx.com:module_ref:top:1.0">
+      <DOCUMENTS/>
+      <PARAMETERS>
+        <PARAMETER NAME="Component_Name" VALUE="top_design_top_0_0"/>
+        <PARAMETER NAME="EDK_IPTYPE" VALUE="PERIPHERAL"/>
+      </PARAMETERS>
+      <PORTS>
+        <PORT CLKFREQUENCY="100000000" DIR="I" NAME="CLK" SIGIS="clk" SIGNAME="External_Ports_CLK">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="CLK"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="3" NAME="LED" RIGHT="0" SIGIS="undef" SIGNAME="top_LED">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="LED"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="BTN" SIGIS="undef" SIGNAME="External_Ports_BTN_0">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="BTN_0"/>
+          </CONNECTIONS>
+        </PORT>
+      </PORTS>
+      <BUSINTERFACES/>
+    </MODULE>
+    <MODULE COREREVISION="7" FULLNAME="/xlconstant_0" HWVERSION="1.1" INSTANCE="xlconstant_0" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="xlconstant" VLNV="xilinx.com:ip:xlconstant:1.1">
+      <DOCUMENTS/>
+      <PARAMETERS>
+        <PARAMETER NAME="CONST_WIDTH" VALUE="2"/>
+        <PARAMETER NAME="CONST_VAL" VALUE="0x2"/>
+        <PARAMETER NAME="Component_Name" VALUE="top_design_xlconstant_0_2"/>
+        <PARAMETER NAME="EDK_IPTYPE" VALUE="PERIPHERAL"/>
+      </PARAMETERS>
+      <PORTS>
+        <PORT DIR="O" LEFT="1" NAME="dout" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_0_dout">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="dout"/>
+          </CONNECTIONS>
+        </PORT>
+      </PORTS>
+      <BUSINTERFACES/>
+    </MODULE>
+  </MODULES>
+
+</EDKSYSTEM>
