@@ -24,8 +24,25 @@ module top(
     
 endmodule
 
-module i2c_encoder(
+// sql = sequential
+module i2c_sql_rd_encoder(
     input reset,
-    input address
+    input data_address,
+    input [2:0] device_address,
+    input next_data,
+    input SCL,
+    inout SDA,
+    output [7:0] data_out
+);
+
+always @ (posedge SCL) begin
+end
+
+endmodule
+
+module i2c_random_rd_encoder(
+    input reset,
+    input data_address,
+    input [2:0] device_address
 );
 endmodule
