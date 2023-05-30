@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Tue May 30 01:14:26 2023" VIVADOVERSION="2022.2">
+
+  <SYSTEMINFO ARCH="spartan7" BOARD="digilentinc.com:arty-s7-50:part0:1.0" DEVICE="7s50" NAME="top_design" PACKAGE="csga324" SPEEDGRADE="-1"/>
+
+  <EXTERNALPORTS>
+    <PORT CLKFREQUENCY="100000000" DIR="I" NAME="SYS_CLK" SIGIS="clk" SIGNAME="External_Ports_SYS_CLK">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="top" PORT="SYS_CLK"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" LEFT="3" NAME="LED" RIGHT="0" SIGIS="undef" SIGNAME="top_LED">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="top" PORT="LED"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" LEFT="1" NAME="CK_IO_26_TO_27" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_0_dout">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="xlconstant_0" PORT="dout"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" LEFT="7" NAME="CK_IO_0_TO_7" RIGHT="0" SIGIS="undef" SIGNAME="top_DATA_OUT">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="top" PORT="DATA_OUT"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" NAME="LED0_G" SIGIS="undef" SIGNAME="top_LED0_G">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="top" PORT="LED0_G"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" NAME="LED0_B" SIGIS="undef" SIGNAME="top_LED0_B">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="top" PORT="LED0_B"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" NAME="LED0_R" SIGIS="undef" SIGNAME="top_LED0_R">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="top" PORT="LED0_R"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" LEFT="3" NAME="SW" RIGHT="0" SIGIS="undef" SIGNAME="External_Ports_SW">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="top" PORT="SW"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" NAME="CK_IO28" SIGIS="undef" SIGNAME="top_SCL">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="top" PORT="SCL"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="IO" NAME="CK_IO29" SIGIS="undef" SIGNAME="External_Ports_CK_IO29">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="top" PORT="SDA"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" LEFT="3" NAME="BTN" RIGHT="0" SIGIS="undef" SIGNAME="External_Ports_BTN">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="top" PORT="BTN"/>
+      </CONNECTIONS>
+    </PORT>
+  </EXTERNALPORTS>
+
+  <EXTERNALINTERFACES/>
+
+  <MODULES>
+    <MODULE COREREVISION="1" FULLNAME="/top" HWVERSION="1.0" INSTANCE="top" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="top" VLNV="xilinx.com:module_ref:top:1.0">
+      <DOCUMENTS/>
+      <PARAMETERS>
+        <PARAMETER NAME="Component_Name" VALUE="top_design_top_0_0"/>
+        <PARAMETER NAME="EDK_IPTYPE" VALUE="PERIPHERAL"/>
+      </PARAMETERS>
+      <PORTS>
+        <PORT CLKFREQUENCY="100000000" DIR="I" NAME="SYS_CLK" SIGIS="clk" SIGNAME="External_Ports_SYS_CLK">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="SYS_CLK"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="BTN" RIGHT="0" SIGIS="undef" SIGNAME="External_Ports_BTN">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="BTN"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="SW" RIGHT="0" SIGIS="undef" SIGNAME="External_Ports_SW">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="SW"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="IO" NAME="SDA" SIGIS="undef" SIGNAME="External_Ports_CK_IO29">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="CK_IO29"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="SCL" SIGIS="undef" SIGNAME="top_SCL">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="CK_IO28"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="3" NAME="LED" RIGHT="0" SIGIS="undef" SIGNAME="top_LED">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="LED"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="LED0_R" SIGIS="undef" SIGNAME="top_LED0_R">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="LED0_R"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="LED0_G" SIGIS="undef" SIGNAME="top_LED0_G">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="LED0_G"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="LED0_B" SIGIS="undef" SIGNAME="top_LED0_B">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="LED0_B"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="7" NAME="DATA_OUT" RIGHT="0" SIGIS="undef" SIGNAME="top_DATA_OUT">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="CK_IO_0_TO_7"/>
+          </CONNECTIONS>
+        </PORT>
+      </PORTS>
+      <BUSINTERFACES/>
+    </MODULE>
+    <MODULE COREREVISION="7" FULLNAME="/xlconstant_0" HWVERSION="1.1" INSTANCE="xlconstant_0" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="xlconstant" VLNV="xilinx.com:ip:xlconstant:1.1">
+      <DOCUMENTS/>
+      <PARAMETERS>
+        <PARAMETER NAME="CONST_WIDTH" VALUE="2"/>
+        <PARAMETER NAME="CONST_VAL" VALUE="0x2"/>
+        <PARAMETER NAME="Component_Name" VALUE="top_design_xlconstant_0_2"/>
+        <PARAMETER NAME="EDK_IPTYPE" VALUE="PERIPHERAL"/>
+      </PARAMETERS>
+      <PORTS>
+        <PORT DIR="O" LEFT="1" NAME="dout" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_0_dout">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="CK_IO_26_TO_27"/>
+          </CONNECTIONS>
+        </PORT>
+      </PORTS>
+      <BUSINTERFACES/>
+    </MODULE>
+  </MODULES>
+
+</EDKSYSTEM>

@@ -1,34 +1,84 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x47BBB90C9ACF35E0",
+      "boundary_crc": "0x5D67746BF3E0AA3C",
       "device": "xc7s50csga324-1",
       "gen_directory": "../../../../eeprom_reader.gen/sources_1/bd/top_design",
       "name": "top_design",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "None",
-      "tool_version": "2022.2"
+      "tool_version": "2022.2",
+      "validated": "true"
     },
     "design_tree": {
       "xlconstant_0": "",
       "top": ""
     },
     "ports": {
-      "BTN": {
-        "direction": "I"
-      },
-      "CLK": {
+      "SYS_CLK": {
         "type": "clk",
-        "direction": "I"
+        "direction": "I",
+        "parameters": {
+          "CLK_DOMAIN": {
+            "value": "top_design_CLK",
+            "value_src": "default"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default"
+          },
+          "FREQ_TOLERANCE_HZ": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "PHASE": {
+            "value": "0.0",
+            "value_src": "default"
+          }
+        }
       },
       "LED": {
         "direction": "O",
         "left": "3",
         "right": "0"
       },
-      "CONSTANTS": {
+      "CK_IO_26_TO_27": {
         "direction": "O",
         "left": "1",
+        "right": "0"
+      },
+      "CK_IO_0_TO_7": {
+        "direction": "O",
+        "left": "7",
+        "right": "0"
+      },
+      "LED0_G": {
+        "direction": "O"
+      },
+      "LED0_B": {
+        "direction": "O"
+      },
+      "LED0_R": {
+        "direction": "O"
+      },
+      "SW": {
+        "direction": "I",
+        "left": "3",
+        "right": "0"
+      },
+      "CK_IO28": {
+        "direction": "O"
+      },
+      "CK_IO29": {
+        "direction": "IO"
+      },
+      "BTN": {
+        "direction": "I",
+        "left": "3",
         "right": "0"
       }
     },
@@ -58,17 +108,50 @@
           "boundary_crc": "0x0"
         },
         "ports": {
-          "CLK": {
+          "SYS_CLK": {
             "type": "clk",
-            "direction": "I"
+            "direction": "I",
+            "parameters": {
+              "CLK_DOMAIN": {
+                "value": "top_design_CLK",
+                "value_src": "default_prop"
+              }
+            }
+          },
+          "BTN": {
+            "direction": "I",
+            "left": "3",
+            "right": "0"
+          },
+          "SW": {
+            "direction": "I",
+            "left": "3",
+            "right": "0"
+          },
+          "SDA": {
+            "direction": "IO"
+          },
+          "SCL": {
+            "direction": "O"
           },
           "LED": {
             "direction": "O",
             "left": "3",
             "right": "0"
           },
-          "BTN": {
-            "direction": "I"
+          "LED0_R": {
+            "direction": "O"
+          },
+          "LED0_G": {
+            "direction": "O"
+          },
+          "LED0_B": {
+            "direction": "O"
+          },
+          "DATA_OUT": {
+            "direction": "O",
+            "left": "7",
+            "right": "0"
           }
         }
       }
@@ -82,8 +165,20 @@
       },
       "CLK_0_1": {
         "ports": [
-          "CLK",
-          "top/CLK"
+          "SYS_CLK",
+          "top/SYS_CLK"
+        ]
+      },
+      "Net": {
+        "ports": [
+          "CK_IO29",
+          "top/SDA"
+        ]
+      },
+      "SW_0_1": {
+        "ports": [
+          "SW",
+          "top/SW"
         ]
       },
       "top_0_LED": {
@@ -92,10 +187,40 @@
           "LED"
         ]
       },
+      "top_DATA_OUT": {
+        "ports": [
+          "top/DATA_OUT",
+          "CK_IO_0_TO_7"
+        ]
+      },
+      "top_LED0_B": {
+        "ports": [
+          "top/LED0_B",
+          "LED0_B"
+        ]
+      },
+      "top_LED0_G": {
+        "ports": [
+          "top/LED0_G",
+          "LED0_G"
+        ]
+      },
+      "top_LED0_R": {
+        "ports": [
+          "top/LED0_R",
+          "LED0_R"
+        ]
+      },
+      "top_SCL": {
+        "ports": [
+          "top/SCL",
+          "CK_IO28"
+        ]
+      },
       "xlconstant_0_dout": {
         "ports": [
           "xlconstant_0/dout",
-          "CONSTANTS"
+          "CK_IO_26_TO_27"
         ]
       }
     }
