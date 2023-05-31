@@ -1,4 +1,0 @@
-top_design_xlconstant_0_2.v,verilog,xil_defaultlib,../../../bd/top_design/ip/top_design_xlconstant_0_2/sim/top_design_xlconstant_0_2.v,
-top_design_top_0_0.v,verilog,xil_defaultlib,../../../bd/top_design/ip/top_design_top_0_0/sim/top_design_top_0_0.v,
-top_design.v,verilog,xil_defaultlib,../../../bd/top_design/sim/top_design.v,
-glbl.v,Verilog,xil_defaultlib,glbl.v

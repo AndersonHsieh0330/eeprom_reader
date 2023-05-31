@@ -20,7 +20,7 @@ set_property -dict { PACKAGE_PIN U11   IOSTANDARD LVCMOS33 } [get_ports { CK_IO_
 #set_property -dict { PACKAGE_PIN F14   IOSTANDARD LVCMOS33 } [get_ports { CLK12MHZ }]; #IO_L13P_T2_MRCC_15 Sch=uclk
 #create_clock -add -name sys_clk_pin -period 83.333 -waveform {0 41.667} [get_ports { CLK12MHZ }];
 set_property -dict { PACKAGE_PIN R2    IOSTANDARD SSTL135 } [get_ports { SYS_CLK }]; #IO_L12P_T1_MRCC_34 Sch=ddr3_clk[200]
-create_clock -add -name sys_clk_pin -period 1000 -waveform {0 500}  [get_ports { SYS_CLK }]; # 1000 ns is 1000 khz, waveform parameter is 0 and 500 meaning 50 percent duty cycle
+create_clock -add -name sys_clk_pin -period 10000 -waveform {0 5000}  [get_ports { SYS_CLK }]; # 10000 ns is 100 khz, waveform parameter is 0 and 500 meaning 50 percent duty cycle
 
 # Switches
 set_property -dict { PACKAGE_PIN H14   IOSTANDARD LVCMOS33 } [get_ports { SW[0] }]; #IO_L20N_T3_A19_15 Sch=sw[0]
