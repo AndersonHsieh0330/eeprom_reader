@@ -9,6 +9,7 @@ module i2c_sql_rd_encoder (
     input         device_adr_en,
     input  [ 2:0] device_adr,
     input         next_data,
+    input         double_speed_scl,   // double the speed of SCL
     input         SCL,
     inout         SDA,
     output [ 7:0] data_out
@@ -30,14 +31,14 @@ module i2c_sql_rd_encoder (
   // microchip datasheet says first 4 bits has to be 1010, this is inverse for indexing
   assign ctrl_byte = {1'b0, device_adr_q, 4'b0101};
 
-  assign SDA = read_SDA_en ? 1'bz : SDA_out_q;;
+  assign SDA = read_SDA_en ? 1'bz : SDA_out_q;
 
   always @(posedge SCL) begin
     if (data_start_adr_en) data_start_adr_q <= data_start_adr;
   end
 
   always @(posedge SCL) begin
-    if(device_adr_en) begin
+    if (device_adr_en) begin
       //inverse bits
       device_adr_q[0] <= device_adr[2];
       device_adr_q[1] <= device_adr[1];
@@ -45,7 +46,7 @@ module i2c_sql_rd_encoder (
     end
   end
 
-  always @(posedge SCL or negedge SCL) begin
+  always @(negedge double_speed_scl) begin
     if (reset) begin
       SDA_out_q <= 1;
       read_SDA_en <= 0;
@@ -72,7 +73,7 @@ module i2c_sql_rd_encoder (
           end
         end
         `SEND_ADR_HIGH: begin
-        SDA_out_q <= 1; // temporary debug purpose
+          SDA_out_q <= 1;  // temporary debug purpose
         end
         default: begin
         end
