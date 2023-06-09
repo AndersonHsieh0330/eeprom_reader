@@ -24,4 +24,17 @@ module top (
   always @(posedge SYS_CLK) begin
     SCL <= ~SCL;
   end
+
+  i2c_sql_rd_encoder sql_encoder_inst (
+    .reset(BTN[0]),
+    .data_start_adr_en(BTN[0]),
+    .data_start_adr(0'b0000000_00000),
+    .device_adr_en(BTN[0]),
+    .device_adr(BTN[2:0]),
+    .next_data(BTN[0]),
+    .double_speed_scl(SYS_CLK),
+    .SCL(SCL),
+    .SDA(SDA),
+    .data_out(DATA_OUT)
+  );
 endmodule
