@@ -56,16 +56,20 @@ module i2c_sql_rd_encoder_tb ();
     #2  //acknowledge
 
     // start sending data here, 8 bits
-    for (int i = 0; i < 8 ; i++) begin
+    for (
+        int i = 0; i < 8; i++
+    ) begin
       for (int j = 0; j < 8; j++) begin
         SDA_q <= test_data[8*i+j];
         #2;
       end
-      read_en <= 0;
-      #1;
-      assert(SDA == 0)
-      #1;
       read_en <= 1;
+      #2;
+      assert (SDA == 0) 
+      #2;
+      read_en   <= 0;
+      next_data <= 1;
+      #1;
     end
   end
 

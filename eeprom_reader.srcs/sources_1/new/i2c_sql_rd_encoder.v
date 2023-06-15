@@ -3,15 +3,15 @@
 // sql = sequential
 // this is essentially one random read at address 0x
 module i2c_sql_rd_encoder (
-    input         reset,
-    input         data_start_adr_en,
-    input  [14:0] data_start_adr,
-    input         device_adr_en,
-    input  [ 2:0] device_adr,
-    input         next_data,
-    input         double_speed_scl,   // double the speed of SCL
-    input         SCL,
-    inout         SDA,
+    input             reset,
+    input             data_start_adr_en,
+    input      [14:0] data_start_adr,
+    input             device_adr_en,
+    input      [ 2:0] device_adr,
+    input             next_data,
+    input             double_speed_scl,   // double the speed of SCL
+    input             SCL,
+    inout             SDA,
     output reg [ 7:0] data_out
 );
 
@@ -29,6 +29,8 @@ module i2c_sql_rd_encoder (
   wire [ 7:0] ctrl_byte;
   reg         r_w;  // read(1) or write(0) for control byte
   reg         ack_recv_delay;  // this bit indicates if acknowledge bit was received
+  reg  [ 7:0] data_out_q;  // register the received data and only outputs when all 8 bits are received
+  reg         next_data_q;
 
   // last bit is R/W, 0 for Read
   // microchip datasheet says first 4 bits has to be 1010, this is inverse for indexing
@@ -132,7 +134,7 @@ module i2c_sql_rd_encoder (
             if (~SDA) begin
               ack_recv_delay <= 1;
               state <= `IDLE;
-              r_w <= 1; // read
+              r_w <= 1;  // read
             end
           end else if (!SCL) begin
             SDA_out_q <= data_start_adr_out[data_bit_count];
@@ -145,15 +147,30 @@ module i2c_sql_rd_encoder (
             read_SDA_en <= 1;
             ack_recv_delay <= 0;
             data_bit_count <= 0;
-          end else begin
-            data_out[data_bit_count] <= SDA;
-            data_bit_count <= data_bit_count == 4'b1000 ? 0 : data_bit_count + 1;
+          end else if (data_bit_count == 4'b1001) begin
+            if (next_data_q) begin
+              SDA_out_q <= 0;  // acknowledge
+              read_SDA_en <= 1;
+              data_bit_count <= 0;
+            end
+          end else if (!SCL) begin
+            data_out_q[data_bit_count] <= SDA;
+            data_bit_count <= data_bit_count + 1;
+            read_SDA_en <= data_bit_count != 4'b1000;
           end
-          end
+        end
         default: begin
         end
       endcase
     end
+  end
+
+  always @(posedge SCL) begin
+    if (state == `READ_DATA_BYTE && data_bit_count == 4'b1001) begin
+      data_out <= data_out_q;
+      next_data_q <= next_data;
+    end
+
   end
 endmodule
 
