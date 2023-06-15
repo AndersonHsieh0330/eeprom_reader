@@ -12,18 +12,19 @@ module i2c_sql_rd_encoder (
     input         double_speed_scl,   // double the speed of SCL
     input         SCL,
     inout         SDA,
-    output [ 7:0] data_out
+    output reg [ 7:0] data_out
 );
 
   reg         read_SDA_en;
   reg         SDA_out_q;
-  reg  [ 1:0] state;
+  reg  [ 2:0] state;
 
   // we usually send 8 bits than wait for acknowledge signal from slave, thus 4 bits
-  reg  [ 3:0] data_bit_count;
+  reg  [ 4:0] data_bit_count;
 
   // registers to save start address and device address, load on reset
   reg  [14:0] data_start_adr_q;
+  wire [15:0] data_start_adr_out;
   reg  [ 2:0] device_adr_q;
   wire [ 7:0] ctrl_byte;
   reg         r_w;  // read(1) or write(0) for control byte
@@ -34,6 +35,8 @@ module i2c_sql_rd_encoder (
   assign ctrl_byte = {r_w, device_adr_q, 4'b0101};
 
   assign SDA = read_SDA_en ? 1'bz : SDA_out_q;
+
+  assign data_start_adr_out = {data_start_adr_q, 1'b0};
 
   always @(posedge SCL) begin
     if (data_start_adr_en) begin
@@ -66,19 +69,22 @@ module i2c_sql_rd_encoder (
 
   always @(negedge double_speed_scl) begin
     if (reset) begin
-      SDA_out_q <= 1;
-      read_SDA_en <= 0;
-      state <= `IDLE;
+      SDA_out_q      <= 1;
+      read_SDA_en    <= 0;
+      state          <= `IDLE;
       data_bit_count <= 0;
       ack_recv_delay <= 0;
+      r_w            <= 0;
     end else begin
       case (state)
         `IDLE: begin
           SDA_out_q      <= 1;
           state          <= `IDLE;
           data_bit_count <= 0;
-          r_w            <= 0;
-          if (SCL) begin
+          if (ack_recv_delay) begin
+            read_SDA_en <= 0;
+            ack_recv_delay <= 0;
+          end else if (SCL) begin
             // only send start bit when CLK is HIGH
             SDA_out_q <= 0;  // start bit
             state <= `SEND_CTL_BYTE;
@@ -87,8 +93,9 @@ module i2c_sql_rd_encoder (
         `SEND_CTL_BYTE: begin
           if (read_SDA_en) begin
             if (~SDA) begin
+              // acknowledge received
               ack_recv_delay <= 1;
-              state <= `SEND_ADR_HIGH;
+              state <= r_w ? `READ_DATA_BYTE : `SEND_ADR_HIGH;
             end
           end else if (!SCL) begin
             SDA_out_q <= ctrl_byte[data_bit_count];
@@ -100,30 +107,49 @@ module i2c_sql_rd_encoder (
           if (ack_recv_delay) begin
             read_SDA_en <= 0;
             ack_recv_delay <= 0;
+            // once we switch acknowledge related flags off we need to output first bit right away
+            SDA_out_q <= data_start_adr_out[data_bit_count];
+            data_bit_count <= data_bit_count + 1;
           end else if (read_SDA_en) begin
             if (~SDA) begin
               ack_recv_delay <= 1;
               state <= `SEND_ADR_LOW;
             end
           end else if (!SCL) begin
-            SDA_out_q <= data_start_adr_q[data_bit_count];
-            data_bit_count <= data_bit_count == 4'b1000 ? 0 : data_bit_count + 1;
+            SDA_out_q <= data_start_adr_out[data_bit_count];
+            data_bit_count <= data_bit_count == 4'b1000 ? data_bit_count : data_bit_count + 1;
             read_SDA_en <= data_bit_count == 4'b1000;
           end
         end
         `SEND_ADR_LOW: begin
-          if (read_SDA_en & ~SDA) begin
-            state <= `SEND_CTL_BYTE;  // acknowledge bit received
+          if (ack_recv_delay) begin
             read_SDA_en <= 0;
-            data_bit_count <= 0;
-            r_w <= 1;
-          end
-          if (!SCL) begin
-            SDA_out_q <= data_start_adr_q[data_bit_count];
+            ack_recv_delay <= 0;
+            // once we switch acknowledge related flags off we need to output first bit right away
+            SDA_out_q <= data_start_adr_out[data_bit_count];
             data_bit_count <= data_bit_count + 1;
-            read_SDA_en <= data_bit_count === 14;  // check of all the bits are 1s which is 15
+          end else if (read_SDA_en) begin
+            if (~SDA) begin
+              ack_recv_delay <= 1;
+              state <= `IDLE;
+              r_w <= 1; // read
+            end
+          end else if (!SCL) begin
+            SDA_out_q <= data_start_adr_out[data_bit_count];
+            data_bit_count <= data_bit_count == 5'b10000 ? 0 : data_bit_count + 1;
+            read_SDA_en <= data_bit_count == 5'b10000;
           end
         end
+        `READ_DATA_BYTE: begin
+          if (ack_recv_delay) begin
+            read_SDA_en <= 1;
+            ack_recv_delay <= 0;
+            data_bit_count <= 0;
+          end else begin
+            data_out[data_bit_count] <= SDA;
+            data_bit_count <= data_bit_count == 4'b1000 ? 0 : data_bit_count + 1;
+          end
+          end
         default: begin
         end
       endcase

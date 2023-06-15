@@ -13,7 +13,7 @@ module i2c_sql_rd_encoder_tb ();
   wire SDA;
   logic SDA_q;
   logic read_en;  //HIGH when master is outputing
-
+  longint test_data = 64'b00000001_00000010_00000100_00001000_00010000_00100000_01000000_10000000;
   assign SDA = ~read_en ? SDA_q : 1'bz;
 
   always begin
@@ -56,16 +56,17 @@ module i2c_sql_rd_encoder_tb ();
     #2  //acknowledge
 
     // start sending data here, 8 bits
-    SDA_q <= 1;
-    #2 SDA_q <= 0;
-    #2 SDA_q <= 0;
-    #2 SDA_q <= 0;
-    #2 SDA_q <= 0;
-    #2 SDA_q <= 0;
-    #2 SDA_q <= 0;
-    #2 SDA_q <= 1;
-    #2;
-
+    for (int i = 0; i < 8 ; i++) begin
+      for (int j = 0; j < 8; j++) begin
+        SDA_q <= test_data[8*i+j];
+        #2;
+      end
+      read_en <= 0;
+      #1;
+      assert(SDA == 0)
+      #1;
+      read_en <= 1;
+    end
   end
 
   i2c_sql_rd_encoder encoder_inst (.*);

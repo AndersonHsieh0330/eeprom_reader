@@ -1,4 +1,5 @@
-`define IDLE 2'b00
-`define SEND_CTL_BYTE 2'b01
-`define SEND_ADR_HIGH 2'b10
-`define SEND_ADR_LOW 2'b11
+`define IDLE 3'b000
+`define SEND_CTL_BYTE 3'b001
+`define SEND_ADR_HIGH 3'b010
+`define SEND_ADR_LOW 3'b011
+`define READ_DATA_BYTE 3'b100
