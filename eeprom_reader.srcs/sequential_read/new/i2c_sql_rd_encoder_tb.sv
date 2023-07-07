@@ -5,6 +5,7 @@ module i2c_sql_rd_encoder_tb ();
   logic data_start_adr_en;
   logic device_adr_en;
   logic double_speed_scl;
+  logic SCL_GEN;
   logic SCL;
   logic next_data;
   logic [14:0] data_start_adr = 15'b0;
@@ -20,12 +21,13 @@ module i2c_sql_rd_encoder_tb ();
     #0.5 double_speed_scl = ~double_speed_scl;
   end
   always @(posedge double_speed_scl) begin
-    SCL <= ~SCL;
+    SCL_GEN <= ~SCL_GEN;
   end
 
   initial begin
+    next_data = 0;
     double_speed_scl <= 0;
-    SCL <= 0;
+    SCL_GEN <= 0;
     data_start_adr <= {15{1'b1}};
     device_adr <= {3{1'b1}};
     data_start_adr_en <= 1;
@@ -57,6 +59,7 @@ module i2c_sql_rd_encoder_tb ();
 
     // start sending data here, 8 bits, starting at 78ns in simulation
     for (int i = 0; i < 8; i++) begin
+      next_data = 0;
       for (int j = 0; j < 8; j++) begin
         SDA_q <= test_data[8*i+j];
         #2;
@@ -65,10 +68,14 @@ module i2c_sql_rd_encoder_tb ();
       assert (SDA == 0) else $error("first data acknowledge bit wrong"); 
       #2;
       read_en   <= 0;
-      next_data <= 1;
     end
+      next_data <= 1;
   end
 
-  i2c_sql_rd_encoder encoder_inst (.*);
+  i2c_sql_rd_encoder encoder_inst (
+    .SCL_IN(SCL_GEN),
+    .SCL_OUT(SCL),
+    .*
+  );
 
 endmodule

@@ -1,7 +1,6 @@
 `include "constants.vh"
 
 // sql = sequential
-// this is essentially one random read at address 0x
 module i2c_sql_rd_encoder (
     input             reset,
     input             data_start_adr_en,
@@ -9,38 +8,38 @@ module i2c_sql_rd_encoder (
     input             device_adr_en,
     input      [ 2:0] device_adr,
     input             next_data,
-    input             double_speed_scl,   // double the speed of SCL
-    input             SCL,
+    input             double_speed_scl,   // double the speed of SCL_IN
+    input             SCL_IN,
     inout             SDA,
+    output            SCL_OUT,
     output reg [ 7:0] data_out
 );
 
-  reg         read_SDA_en;
-  reg         SDA_out_q;
-  reg  [ 2:0] state;
+  reg         read_SDA_en = 0;
+  reg         SDA_out_q = 1;
+  reg  [ 2:0] state = `IDLE;
 
   // we usually send 8 bits than wait for acknowledge signal from slave, thus 4 bits
-  reg  [ 4:0] data_bit_count;
+  reg  [ 4:0] data_bit_count = 0;
 
   // registers to save start address and device address, load on reset
   reg  [14:0] data_start_adr_q;
   wire [15:0] data_start_adr_out;
   reg  [ 2:0] device_adr_q;
   wire [ 7:0] ctrl_byte;
-  reg         r_w;  // read(1) or write(0) for control byte
-  reg         ack_recv_delay;  // this bit indicates if acknowledge bit was received
-  reg  [ 7:0] data_out_q;  // register the received data and only outputs when all 8 bits are received
-  reg         next_data_q;
+  reg         r_w = 0;  // read(1) or write(0) for control byte, initial value = 0 because we need a dummy write before reading
+  reg         ack_recv_delay = 0;  // this bit indicates if acknowledge bit was received
+  reg  [ 7:0] data_out_q = 0;  // register the received data and only outputs when all 8 bits are received
+  reg         next_data_q = 0;
 
   // last bit is R/W, 0 for Read
   // microchip datasheet says first 4 bits has to be 1010, this is inverse for indexing
   assign ctrl_byte = {r_w, device_adr_q, 4'b0101};
-
   assign SDA = read_SDA_en ? 1'bz : SDA_out_q;
-
   assign data_start_adr_out = {data_start_adr_q, 1'b0};
+  assign SCL_OUT = state == `IDLE ? 1'b1 : SCL_IN;
 
-  always @(posedge SCL) begin
+  always @(posedge SCL_IN) begin
     if (data_start_adr_en) begin
       data_start_adr_q[0]  <= data_start_adr[14];
       data_start_adr_q[1]  <= data_start_adr[13];
@@ -60,7 +59,7 @@ module i2c_sql_rd_encoder (
     end
   end
 
-  always @(posedge SCL) begin
+  always @(posedge SCL_IN) begin
     if (device_adr_en) begin
       //inverse bits
       device_adr_q[0] <= device_adr[2];
@@ -86,7 +85,7 @@ module i2c_sql_rd_encoder (
           if (ack_recv_delay) begin
             read_SDA_en <= 0;
             ack_recv_delay <= 0;
-          end else if (SCL) begin
+          end else if (SCL_IN) begin
             // only send start bit when CLK is HIGH
             SDA_out_q <= 0;  // start bit
             state <= `SEND_CTL_BYTE;
@@ -99,7 +98,7 @@ module i2c_sql_rd_encoder (
               ack_recv_delay <= 1;
               state <= r_w ? `READ_DATA_BYTE : `SEND_ADR_HIGH;
             end
-          end else if (!SCL) begin
+          end else if (!SCL_IN) begin
             SDA_out_q <= ctrl_byte[data_bit_count];
             data_bit_count <= data_bit_count == 4'b1000 ? 0 : data_bit_count + 1;
             read_SDA_en <= data_bit_count == 4'b1000;
@@ -117,7 +116,7 @@ module i2c_sql_rd_encoder (
               ack_recv_delay <= 1;
               state <= `SEND_ADR_LOW;
             end
-          end else if (!SCL) begin
+          end else if (!SCL_IN) begin
             SDA_out_q <= data_start_adr_out[data_bit_count];
             data_bit_count <= data_bit_count == 4'b1000 ? data_bit_count : data_bit_count + 1;
             read_SDA_en <= data_bit_count == 4'b1000;
@@ -136,7 +135,7 @@ module i2c_sql_rd_encoder (
               state <= `IDLE;
               r_w <= 1;  // read
             end
-          end else if (!SCL) begin
+          end else if (!SCL_IN) begin
             SDA_out_q <= data_start_adr_out[data_bit_count];
             data_bit_count <= data_bit_count == 5'b10000 ? 0 : data_bit_count + 1;
             read_SDA_en <= data_bit_count == 5'b10000;
@@ -148,17 +147,11 @@ module i2c_sql_rd_encoder (
             ack_recv_delay <= 0;
             data_bit_count <= 0;
             next_data_q <= 0;
-          end else if (data_bit_count == 4'b1001) begin
-            if (next_data_q) begin
-              SDA_out_q <= 0;  // acknowledge
-              read_SDA_en <= 1;
-              data_bit_count <= 0;
-            end
-          end else if (!SCL) begin
+          end else if (!SCL_IN) begin
             data_out_q[data_bit_count] <= SDA;
             data_bit_count <= data_bit_count + 1;
             read_SDA_en <= (data_bit_count != 5'b00111);
-            SDA_out_q <= 0; // acknowledge
+            SDA_out_q <= 0;
           end
         end
         default: begin
@@ -167,10 +160,11 @@ module i2c_sql_rd_encoder (
     end
   end
 
-  always @(posedge SCL) begin
+  always @(posedge SCL_IN) begin
+    next_data_q <= !next_data_q && next_data;
     if (state == `READ_DATA_BYTE && data_bit_count == 4'b1001) begin
       data_out <= data_out_q;
-      next_data_q <= next_data;
+      next_data_q <= 0;
       data_bit_count <= 0;
     end
 
