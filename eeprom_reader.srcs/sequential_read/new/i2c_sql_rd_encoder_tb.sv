@@ -66,7 +66,6 @@ module i2c_sql_rd_encoder_tb ();
       #2;
       read_en   <= 0;
       next_data <= 1;
-      #1;
     end
   end
 

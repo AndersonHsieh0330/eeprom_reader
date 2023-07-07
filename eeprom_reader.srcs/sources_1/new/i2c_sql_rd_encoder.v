@@ -167,12 +167,13 @@ module i2c_sql_rd_encoder (
     end
   end
 
-  // always @(posedge SCL) begin
-  //   if (state == `READ_DATA_BYTE && data_bit_count == 4'b1001) begin
-  //     data_out <= data_out_q;
-  //     next_data_q <= next_data;
-  //   end
+  always @(posedge SCL) begin
+    if (state == `READ_DATA_BYTE && data_bit_count == 4'b1001) begin
+      data_out <= data_out_q;
+      next_data_q <= next_data;
+      data_bit_count <= 0;
+    end
 
-  // end
+  end
 endmodule
 
