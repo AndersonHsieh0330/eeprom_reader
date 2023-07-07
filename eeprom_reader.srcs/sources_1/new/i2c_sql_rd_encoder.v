@@ -147,6 +147,7 @@ module i2c_sql_rd_encoder (
             read_SDA_en <= 1;
             ack_recv_delay <= 0;
             data_bit_count <= 0;
+            next_data_q <= 0;
           end else if (data_bit_count == 4'b1001) begin
             if (next_data_q) begin
               SDA_out_q <= 0;  // acknowledge
@@ -156,7 +157,8 @@ module i2c_sql_rd_encoder (
           end else if (!SCL) begin
             data_out_q[data_bit_count] <= SDA;
             data_bit_count <= data_bit_count + 1;
-            read_SDA_en <= data_bit_count != 4'b1000;
+            read_SDA_en <= (data_bit_count != 5'b00111);
+            SDA_out_q <= 0; // acknowledge
           end
         end
         default: begin
@@ -165,12 +167,12 @@ module i2c_sql_rd_encoder (
     end
   end
 
-  always @(posedge SCL) begin
-    if (state == `READ_DATA_BYTE && data_bit_count == 4'b1001) begin
-      data_out <= data_out_q;
-      next_data_q <= next_data;
-    end
+  // always @(posedge SCL) begin
+  //   if (state == `READ_DATA_BYTE && data_bit_count == 4'b1001) begin
+  //     data_out <= data_out_q;
+  //     next_data_q <= next_data;
+  //   end
 
-  end
+  // end
 endmodule
 

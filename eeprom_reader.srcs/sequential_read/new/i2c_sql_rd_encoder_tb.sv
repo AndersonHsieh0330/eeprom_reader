@@ -55,17 +55,14 @@ module i2c_sql_rd_encoder_tb ();
     SDA_q <= 0;
     #2  //acknowledge
 
-    // start sending data here, 8 bits
-    for (
-        int i = 0; i < 8; i++
-    ) begin
+    // start sending data here, 8 bits, starting at 78ns in simulation
+    for (int i = 0; i < 8; i++) begin
       for (int j = 0; j < 8; j++) begin
         SDA_q <= test_data[8*i+j];
         #2;
       end
       read_en <= 1;
-      #2;
-      assert (SDA == 0) 
+      assert (SDA == 0) else $error("first data acknowledge bit wrong"); 
       #2;
       read_en   <= 0;
       next_data <= 1;
