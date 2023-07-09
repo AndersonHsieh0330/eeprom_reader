@@ -88,15 +88,15 @@ module i2c_sql_rd_encoder (
           end else if (SCL_IN) begin
             // only send start bit when CLK is HIGH
             SDA_out_q <= 0;  // start bit
-            state <= `SEND_CTL_BYTE;
+            state <= `SEND_DEVICE_ADR;
           end
         end
-        `SEND_CTL_BYTE: begin
+        `SEND_DEVICE_ADR: begin
           if (read_SDA_en) begin
             if (~SDA) begin
               // acknowledge received
               ack_recv_delay <= 1;
-              state <= r_w ? `READ_DATA_BYTE : `SEND_ADR_HIGH;
+              state <= r_w ? `READ_DATA_BYTE : `SEND_WORD_ADR_HIGH;
             end
           end else if (!SCL_IN) begin
             SDA_out_q <= ctrl_byte[data_bit_count];
@@ -104,7 +104,7 @@ module i2c_sql_rd_encoder (
             read_SDA_en <= data_bit_count == 4'b1000;
           end
         end
-        `SEND_ADR_HIGH: begin
+        `SEND_WORD_ADR_HIGH: begin
           if (ack_recv_delay) begin
             read_SDA_en <= 0;
             ack_recv_delay <= 0;
@@ -114,7 +114,7 @@ module i2c_sql_rd_encoder (
           end else if (read_SDA_en) begin
             if (~SDA) begin
               ack_recv_delay <= 1;
-              state <= `SEND_ADR_LOW;
+              state <= `SEND_WORD_ADR_LOW;
             end
           end else if (!SCL_IN) begin
             SDA_out_q <= data_start_adr_out[data_bit_count];
@@ -122,7 +122,7 @@ module i2c_sql_rd_encoder (
             read_SDA_en <= data_bit_count == 4'b1000;
           end
         end
-        `SEND_ADR_LOW: begin
+        `SEND_WORD_ADR_LOW: begin
           if (ack_recv_delay) begin
             read_SDA_en <= 0;
             ack_recv_delay <= 0;
