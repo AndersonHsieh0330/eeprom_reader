@@ -3,3 +3,4 @@
 `define SEND_WORD_ADR_HIGH 3'b010
 `define SEND_WORD_ADR_LOW 3'b011
 `define READ_DATA_BYTE 3'b100
+`define SEND_STOP_BIT 3'b101

@@ -58,9 +58,9 @@ module i2c_sql_rd_encoder_tb ();
     #2  //acknowledge
 
     // start sending data here, 8 bits, starting at 78ns in simulation
-    for (int i = 0; i < 8; i++) begin
+    for (int i = 0; i < 8; i = i + 1) begin
       next_data = 0;
-      for (int j = 0; j < 8; j++) begin
+      for (int j = 0; j < 8; j = j + 1) begin
         SDA_q <= test_data[8*i+j];
         #2;
       end
