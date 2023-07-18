@@ -1,6 +1,6 @@
 {
     "signal": [
-        {"name": "double speed scl", "wave": "lhlhlhlhlhlhlhlhlh|lhlhlhlhlhlhlh"},
+        {"name": "double speed scl", "wave": "hlhlhlhlhlhlhlhlhl|.hlhlhlhlhlhlh"},
         {"name": "SCL_IN", "wave": "l.h.l.h.l.h.l.h.l.|.h.l.h.l.h.l.h"},
         {"name": "rst", "wave": "010...............|.............."},
         {"name": "start", "wave": "0....10...........|.............."},
