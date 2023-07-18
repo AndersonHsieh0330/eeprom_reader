@@ -22,7 +22,11 @@ module top (
   assign LED0_B = !sequential_read_mode;
 
   always @(posedge SYS_CLK) begin
-    SCL <= ~SCL;
+    if (reset) begin
+      SCL <= 0; // must start at 0 so posedge of SCL lines up with posedge of SYS_CLK
+    end else begin
+      SCL <= ~SCL;
+    end
   end
 
   i2c_sql_rd_encoder sql_encoder_inst (

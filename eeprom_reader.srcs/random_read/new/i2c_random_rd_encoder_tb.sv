@@ -1,6 +1,7 @@
 `timescale 1ns / 1ps
 
 module i2c_random_rd_encoder_tb ();
+  logic reset;
   logic double_speed_scl_to_encoder = 0; // this is the system clk from ocsillator 
   logic SCL;  // this is the real SCL, does not toggle on idle state
   logic SCL_TO_ENCODER = 0;
@@ -40,7 +41,6 @@ module i2c_random_rd_encoder_tb ();
     data_adr_en <= 0;
     device_adr_en <= 0;
     start <= 0;
-    done <= 1;
     #2; 
     start <= 1;
     data_adr <= {15{1'b1}};
