@@ -2,19 +2,17 @@
 
 module i2c_random_rd_encoder_tb ();
   logic reset;
-  logic double_speed_scl_to_encoder = 0; // this is the system clk from ocsillator 
+  logic double_speed_scl_to_encoder; // this is the system clk from ocsillator 
   logic SCL;  // this is the real SCL, does not toggle on idle state
-  logic SCL_TO_ENCODER = 0;
+  logic SCL_TO_ENCODER;
   wire SDA;
-  logic data_adr_en;
   logic [14:0] data_adr;
-  logic device_adr_en;
   logic [2:0] device_adr;
   logic start;
   logic done;
-  logic read_en = 1;
-  logic SDA_q = 0;
-  logic [3:0] bit_count = 0;;
+  logic read_en;
+  logic SDA_q;
+  logic [3:0] bit_count;
 
   assign SDA = ~read_en ? SDA_q : 1'bz;
 
@@ -25,49 +23,69 @@ module i2c_random_rd_encoder_tb ();
     SCL_TO_ENCODER <= ~SCL_TO_ENCODER;
   end
 
-  always_ff @(negedge double_speed_scl_to_encoder) begin
-    if (~(SCL | done)) begin
-      bit_count <= bit_count + 1;
-      if (bit_count == 8) begin
-        read_en <= 0;
-        SDA_q <= 0; // acknolwedge
-      end else if (bit_count == 9) begin
-        bit_count <= 0;
-      end
-    end
-  end
+  // always_ff @(negedge double_speed_scl_to_encoder) begin
+  //   if (~(SCL | done)) begin
+  //     bit_count <= bit_count + 1;
+  //     if (bit_count == 8) begin
+  //       read_en <= 0;
+  //       SDA_q <= 0; // acknolwedge
+  //     end else if (bit_count == 9) begin
+  //       bit_count <= 0;
+  //     end
+  //   end
+  // end
   // every #2 is a cycle of SCL
   initial begin
-    data_adr_en <= 0;
-    device_adr_en <= 0;
-    start <= 0;
-    #2; 
-    start <= 1;
+    // tb nets initialize, does not affect nets in encoder
+    reset <= 0;
+    double_speed_scl_to_encoder <= 0;
+    SCL_TO_ENCODER <= 0;
     data_adr <= {15{1'b1}};
-    data_adr_en <= 1;
     device_adr <= {3{1'b1}};
-    device_adr_en <= 1;
-    #2
     start <= 0;
-    // #16;  // start + control byte
-    // read_en <= 0;
-    // SDA_q <= 0;
-    // #2;  //acknowledge
-    // read_en <= 1;
-    // #16;  // address byte HIGH
-    // read_en <= 0;
-    // SDA_q <= 0;
-    // #2; //acknowledge
-    // read_en <= 1;
-    // #16; // address byte LOW
-    // read_en <= 0;
-    // SDA_q <= 0;
-    // #2; //acknowledge
-    // read_en <= 1;
-    // #18; // start + control byte
-    // read_en <= 0;
-    // SDA_q <= 0;
-    // #2;  //acknowledge
+    read_en <= 1;
+    SDA_q <= 0;
+    bit_count <= 0;     
+
+    reset <= 1;
+    #1; 
+    reset <= 0;
+    #1;
+    start <= 1;
+    #1;
+    start <= 0;
+    #1;
+
+    #18;  // start + control byte
+    read_en <= 0;
+    SDA_q <= 0;
+    #2; //acknowledge
+    read_en <= 1;
+    
+    #16; // address byte HIGH
+    read_en <= 0;
+    SDA_q <= 0;
+    #2; //acknowledge
+    read_en <= 1;
+
+    #16; // address byte LOW
+    read_en <= 0;
+    SDA_q <= 0;
+    #2;  //acknowledge
+    read_en <= 1;
+
+    #18; // start + control byte
+    read_en <= 0;
+    SDA_q <= 0;
+    #2; //acknowledge
+
+    // start sending data
+    for(int i = 0 ; i < 8 ; i = i + 1) begin
+      SDA_q <= i[0];
+      #2;
+    end
+    #2; // no acknowledge
+    #2; // STOP bit
 
 
   end

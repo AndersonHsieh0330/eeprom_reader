@@ -1,11 +1,11 @@
 {
     "signal": [
-        {"name": "double speed scl", "wave": "hlhlhlhlhlhlhlhlhl|.hlhlhlhlhlhlh"},
-        {"name": "SCL_IN", "wave": "l.h.l.h.l.h.l.h.l.|.h.l.h.l.h.l.h"},
-        {"name": "reset", "wave": "010...............|.............."},
-        {"name": "reset_q", "wave": "0.1.0.............|.............."},
-        {"name": "start", "wave": "0....10...........|.............."},
-        {"name": "done_q", "wave": "1.....0...........|.........1...."},
-        {"name": "SCL_OUT", "wave": "h.......l.h.l.h.l.|.h.l.h.l.h...."},
-        {"name": "SDA", "wave": "1..........0.=...0|=...0.1.......", "data":"first_bit_of_data last_bit_of_data"}
+        {"name": "double speed scl", "wave": "hlhlhlhlhlhlhl|.hlhlhlhlhlhlh"},
+        {"name": "SCL_IN", "wave": "l.h.l.h.l.h.l.|.h.l.h.l.h.l.h"},
+        {"name": "reset", "wave": "010...........|.............."},
+        {"name": "reset_q", "wave": "0.1.0.........|.............."},
+        {"name": "start", "wave": "0....10.......|.............."},
+        {"name": "done_q", "wave": "1.....0.......|......1......."},
+        {"name": "SCL_OUT", "wave": "h.......l.h.l.|.h.l.h........"},
+        {"name": "SDA", "wave": "1......0.=...0|=...0.1.......", "data":"first_bit_of_data last_bit_of_data"}
     ]}
