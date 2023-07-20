@@ -18,6 +18,7 @@ module i2c_random_rd_encoder (
     input             SCL_IN,
     inout             SDA,
     output            SCL_OUT, // goes to eeprom
+    output reg  [7:0] data_out,
     output            done
 );
   reg         done_q;
@@ -25,7 +26,7 @@ module i2c_random_rd_encoder (
   reg         SDA_out_q; // SDA should be pulled HIGH in idle
   reg  [2:0]  state;
   reg  [3:0]  data_bit_count;
-  reg  [5:0]  clk_cycle_counter;
+  reg  [7:0]  clk_cycle_counter;
 
   // registers to save start address and device address, load on reset
   reg  [14:0] data_adr_q;
@@ -36,8 +37,11 @@ module i2c_random_rd_encoder (
   reg         r_w;  // read(1) or write(0) for control byte, initial value = 0 because we need a dummy write before reading
   reg         ack_recv_delay;  // this bit indicates if acknowledge bit was received
   reg  [7:0]  data_out_q;  // register the received data and only outputs when all 8 bits are received
+  reg         data_out_en;
   reg         receiving_data_byte; // this bit is one on the cycle after the the acknowledge bit from READ control byte
   wire        read_SDA_en;
+  reg         data_out_en_delay;
+  reg         done_q_delay;
 
   // microchip datasheet says first 4 bits has to be 1010, this is inverse for indexing
   assign ctrl_byte = {r_w, device_adr_q, 4'b0101};
@@ -49,7 +53,7 @@ module i2c_random_rd_encoder (
   assign data_adr_high_out = {data_adr_q[6:0], 1'b0};
   assign data_adr_low_out = data_adr_q[14:7];
   assign SCL_OUT = ~done_q ? SCL_IN : 1'b1; 
-  assign done = done_q;
+  assign done = done_q_delay;
 
   // reset_q is used to reset all the signals in state machine always block
   always @(posedge double_speed_scl) begin
@@ -60,8 +64,36 @@ module i2c_random_rd_encoder (
     end
   end
   
+  always @(posedge done_q) begin
+    if (reset) begin
+      data_out <= 0;
+    end else begin
+      data_out <= data_out_q;
+    end
+  end
+
   always @(posedge SCL_IN) begin
-    if (reset | clk_cycle_counter == 50) begin
+    if (reset) begin
+      data_out_en_delay <= 0;
+    end else if (data_out_en_delay) begin
+      data_out_en_delay <= 0;
+    end else if (data_out_en) begin
+      data_out_en_delay <= 1;
+    end
+  end
+
+  always @(posedge SCL_IN) begin
+    if (reset) begin
+      done_q_delay <= 1;
+    end else if (done_q & start) begin
+      done_q_delay <= 0;
+    end else if (~done_q_delay) begin
+      done_q_delay <= done_q;
+    end
+  end
+
+  always @(double_speed_scl) begin
+    if (reset | clk_cycle_counter == 190) begin
       clk_cycle_counter <= 0;
     end else if (done_q & start) begin
       clk_cycle_counter <= 1;
@@ -73,9 +105,9 @@ module i2c_random_rd_encoder (
   always @(posedge SCL_IN) begin
     if (reset) begin
       done_q <= 1;
-    end else if (done_q & start) begin
+    end else if (start & done_q) begin
       done_q <= 0;
-    end else if (clk_cycle_counter == 50) begin
+    end else if (data_out_en_delay) begin
       done_q <= 1;
     end
   end
@@ -115,13 +147,14 @@ module i2c_random_rd_encoder (
       ack_recv_delay <= 0;
       data_out_q <= 0;
       receiving_data_byte <= 0;      
-      
+      data_out_en <= 0;
     end else begin
     case (state)
         `IDLE: begin
           SDA_out_q <= 1;
           data_bit_count <= 0;
-          if (clk_cycle_counter == 2 || clk_cycle_counter == 30 && SCL_OUT) begin
+          receiving_data_byte <= 0;
+          if (~done_q && SCL_OUT) begin
             SDA_out_q <= 0; // START bit
             state <= `SEND_DEVICE_ADR;
           end
@@ -159,15 +192,19 @@ module i2c_random_rd_encoder (
         end
         `READ_DATA_BYTE: begin
           if (!SCL_OUT) begin
-              data_out_q[data_bit_count==9?0:data_bit_count] <= SDA;
-              data_bit_count <= data_bit_count == 9 ? 1 : data_bit_count + 1;
-              receiving_data_byte <= 1;
               if (data_bit_count == 8) begin
                 SDA_out_q <= 1; // no acknowledge
-              end else if (data_bit_count == 9) begin
+                data_bit_count <= data_bit_count + 1;
+                data_out_en <= 1;
+              end else if (data_out_en) begin
                 SDA_out_q <= 0;
                 state <= `SEND_STOP_BIT;
-            end
+                data_out_en <= 0;
+              end else begin
+                data_out_q[data_bit_count==9?0:data_bit_count] <= SDA;
+                data_bit_count <= data_bit_count == 9 ? 1 : data_bit_count + 1;
+                receiving_data_byte <= 1;
+              end
           end 
         end
         `SEND_STOP_BIT: begin

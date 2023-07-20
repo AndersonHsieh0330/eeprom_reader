@@ -3,10 +3,12 @@
         {"name": "double speed scl", "wave": "hlhlhlhlhlhlhl|.hlhlhlhlhlhlh"},
         {"name": "SCL_IN", "wave": "l.h.l.h.l.h.l.|.h.l.h.l.h.l.h"},
         {"name": "reset", "wave": "010...........|.............."},
-        {"name": "reset_q", "wave": "0.1.0.........|.............."},
         {"name": "start", "wave": "0....10.......|.............."},
-        {"name": "done_q", "wave": "1.....0.......|.............1"},
-        {"name": "data_out_en", "wave": "0.............|....1.....0..."},
+        {"name": "done", "wave": "1.....0.......|.............1"},
+        {"name": "done_q", "wave": "1.....0.......|.........1...."},
+        {"name": "done_q_delay", "wave": "1.....0.......|.............1"},
+        {"name": "data_out_en", "wave": "0.............|....1...0....."},
+        {"name": "data_out_en_delay", "wave": "0.............|.....1...0...."},
         {"name": "SCL_OUT", "wave": "h.......l.h.l.|.h.l.h.l.h...."},
         {"name": "SDA", "wave": "1......0.=...0|=...=...0.1...", "data":"first_bit_of_ctrl_byte last_bit_of_data no_acknowledge"}
     ]}

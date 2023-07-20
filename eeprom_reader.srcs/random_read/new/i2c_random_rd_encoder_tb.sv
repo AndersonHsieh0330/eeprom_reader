@@ -13,6 +13,7 @@ module i2c_random_rd_encoder_tb ();
   logic read_en;
   logic SDA_q;
   logic [3:0] bit_count;
+  logic [7:0] data_out;
 
   assign SDA = ~read_en ? SDA_q : 1'bz;
 
@@ -23,18 +24,6 @@ module i2c_random_rd_encoder_tb ();
     SCL_TO_ENCODER <= ~SCL_TO_ENCODER;
   end
 
-  // always_ff @(negedge double_speed_scl_to_encoder) begin
-  //   if (~(SCL | done)) begin
-  //     bit_count <= bit_count + 1;
-  //     if (bit_count == 8) begin
-  //       read_en <= 0;
-  //       SDA_q <= 0; // acknolwedge
-  //     end else if (bit_count == 9) begin
-  //       bit_count <= 0;
-  //     end
-  //   end
-  // end
-  // every #2 is a cycle of SCL
   initial begin
     // tb nets initialize, does not affect nets in encoder
     reset <= 0;
@@ -56,7 +45,7 @@ module i2c_random_rd_encoder_tb ();
     start <= 0;
     #1;
 
-    #18;  // start + control byte
+    #16;  // start + control byte
     read_en <= 0;
     SDA_q <= 0;
     #2; //acknowledge
@@ -84,6 +73,7 @@ module i2c_random_rd_encoder_tb ();
       SDA_q <= i[0];
       #2;
     end
+    read_en <= 1;
     #2; // no acknowledge
     #2; // STOP bit
 
