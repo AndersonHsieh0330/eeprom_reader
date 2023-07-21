@@ -3,42 +3,43 @@
 
 module top (
     input            SYS_CLK,  // from on board oscillator to FPGA chip, 200kHz
-    input      [3:0] BTN,      // BTN[0] is reset, BTN[1] is next data
-    input      [3:0] SW,       // SW[0] = LOW, sequential read from address 00 ; SW[0] = HIGH,
+    input      [3:0] BTN,      // BTN[0] is reset, BTN[1] is start signal 
+    input      [3:0] SW,       // SW[0] = HIGH, random read; SW[0] = LOW, sequential read
     inout            SDA,
-    output reg       SCL,
-    output     [3:0] LED,      // LED[0] to indicate reset signal, LED[1] for next data
-    output           LED0_R,   // for future rror signal
+    output           SCL_OUT,
+    output     [3:0] LED,      // LED[0] to indicate reset signal, LED[1] for start signal 
+    output           LED0_R,   // for future error signal
     output           LED0_G,
     output           LED0_B,   // sequential read from
     output     [7:0] DATA_OUT  // 8 bit data at every address in eeprom
 
 );
+  wire done;
   wire reset = BTN[0];
-  wire next_data = BTN[1];
-  wire sequential_read_mode = SW[0];
+  wire start = BTN[1];
+  wire random_read_mode = SW[0];
+  reg  SCL_IN;
   assign LED    = BTN;  //  mapp all buttons to leds
-  assign LED0_G = sequential_read_mode;
-  assign LED0_B = !sequential_read_mode;
-
+  assign LED0_G = random_read_mode;
+  assign LED0_B = !random_read_mode;
   always @(posedge SYS_CLK) begin
     if (reset) begin
-      SCL <= 0; // must start at 0 so posedge of SCL lines up with posedge of SYS_CLK
+      SCL_IN <= 0; // must start at 0 so posedge of SCL lines up with posedge of SYS_CLK
     end else begin
-      SCL <= ~SCL;
+      SCL_IN <= ~SCL_IN;
     end
   end
 
-  i2c_sql_rd_encoder sql_encoder_inst (
-    .reset(BTN[0]),
-    .data_start_adr_en(BTN[0]),
-    .data_start_adr(0'b0000000_00000),
-    .device_adr_en(BTN[0]),
-    .device_adr(BTN[2:0]),
-    .next_data(BTN[0]),
+  i2c_random_rd_encoder random_encoder_inst (
+    .reset(reset),
+    .data_adr(0'b0000000_00000),
+    .device_adr(0'b000),
+    .start(start),
     .double_speed_scl(SYS_CLK),
-    .SCL(SCL),
+    .SCL_IN(SCL),
     .SDA(SDA),
-    .data_out(DATA_OUT)
+    .SCL_OUT(SCL_OUT),
+    .data_out(DATA_OUT),
+    .done(done)
   );
 endmodule
