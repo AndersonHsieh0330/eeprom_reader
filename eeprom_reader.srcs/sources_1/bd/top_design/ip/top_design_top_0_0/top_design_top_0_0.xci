@@ -42,7 +42,6 @@
         "BTN": [ { "direction": "in", "size_left": "3", "size_right": "0" } ],
         "SW": [ { "direction": "in", "size_left": "3", "size_right": "0" } ],
         "SDA": [ { "direction": "inout" } ],
-        "SCL_IN": [ { "direction": "in" } ],
         "SCL_OUT": [ { "direction": "out" } ],
         "LED": [ { "direction": "out", "size_left": "3", "size_right": "0" } ],
         "LED0_R": [ { "direction": "out" } ],

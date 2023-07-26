@@ -102,9 +102,6 @@
           "SDA": {
             "direction": "IO"
           },
-          "SCL_IN": {
-            "direction": "I"
-          },
           "SCL_OUT": {
             "direction": "O"
           },
@@ -187,6 +184,7 @@
       },
       "top_SCL": {
         "ports": [
+          "top/SCL_OUT",
           "CK_IO28"
         ]
       },
