@@ -44,8 +44,8 @@ module top (
 
   i2c_random_rd_encoder random_encoder_inst (
     .reset(reset),
-    .data_adr(0'b1000000_00000001),
-    .device_adr(0'b101),
+    .data_adr(0'b0000000_00000000),
+    .device_adr(0'b000),
     .start(start),
     .double_speed_scl(SYS_CLK),
     .SCL_IN(SCL_IN),
