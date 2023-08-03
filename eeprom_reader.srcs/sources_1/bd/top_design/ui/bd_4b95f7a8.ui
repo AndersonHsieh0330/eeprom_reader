@@ -1,9 +1,9 @@
 {
    "ActiveEmotionalView":"Default View",
    "Default View_ScaleFactor":"3.53553",
-   "Default View_TopLeft":"-102,-2",
+   "Default View_TopLeft":"-102,56",
    "ExpandedHierarchyInLayout":"",
-   "guistr":"# # String gsaved with Nlview 7.0r6  2020-01-29 bk=1.5227 VDI=41 GEI=36 GUI=JA:10.0 non-TLS
+   "guistr":"# # String gsaved with Nlview 7.0r6  2020-01-29 bk=1.5227 VDI=41 GEI=36 GUI=JA:10.0 non-TLS-threadsafe
 #  -string -flagsOSRD
 preplace port port-id_SYS_CLK -pg 1 -lvl 0 -x 0 -y 190 -defaultsOSRD
 preplace port port-id_LED0_G -pg 1 -lvl 2 -x 310 -y 250 -defaultsOSRD
