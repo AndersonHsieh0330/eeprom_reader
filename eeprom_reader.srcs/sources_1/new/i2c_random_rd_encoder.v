@@ -5,9 +5,6 @@
 /*
     this module is intended to use the "Random Read" feature of 24 series eeprom 
     to read one signle byte at a 15 bit address
-
-    And this module does not have a reset input, once "start" signal is signaled
-    state machine propogates and all inputs are ignored until STOP bit is sent to eeprom
 */
 module i2c_random_rd_encoder (
     input             reset, // reset is required to reset values in all registers

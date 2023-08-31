@@ -8,7 +8,7 @@
 module top (
     input            SYS_CLK,  // from on board oscillator to FPGA chip, 200kHz
     input      [3:0] BTN,      // BTN[0] = reset, BTN[1] = start, BTN[2] = scl_reset
-    input      [3:0] SW,       // SW[0] = HIGH, random read; SW[0] = LOW, sequential read
+    input      [3:0] SW,       // SW[0] = HIGH, random read; SW[0] = LOW, sequential read(not implemented yet)
     inout            SDA,
     output           SCL_OUT,
     output     [3:0] LED,      // LED[0] to indicate reset signal, LED[1] for start signal 
@@ -24,6 +24,7 @@ module top (
   wire random_read_mode;
   wire scl_reset; 
   reg  SCL_IN;
+  reg [14:0] address_counter;
 
   assign LED[2:0] = BTN[2:0]; 
   assign LED[3] = done; 
@@ -42,9 +43,18 @@ module top (
     end
   end
 
+  always @(posedge SCL_IN) begin
+    if (reset) begin
+      address_counter <= 15'b000000000000000;
+    end else if (start & done) begin
+      // loop around when reach the last address
+      address_counter <= &address_counter ? 15'b000000000000000 : address_counter + 1;
+    end
+  end
+
   i2c_random_rd_encoder random_encoder_inst (
     .reset(reset),
-    .data_adr(0'b0000000_00000000),
+    .data_adr(address_counter),
     .device_adr(0'b000),
     .start(start),
     .double_speed_scl(SYS_CLK),
