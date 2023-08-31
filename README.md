@@ -20,8 +20,7 @@ Once the device is starting up0 user should press the scl_reset button first. On
 Once the address read reaches the last address, which is 0x7FFF for 256k bit eeprom, the next address will loop back to 0x0000.
 
 ### Implementation
-Based on the datasheet specifications, this project implements a state machine to deliver the correct signals to the SDA line.
-2 clock signals are generated, 200khz for system clk and 100khz for the SCL clock that the EEPROM receives.
+Based on the datasheet specifications, this project implements a **state machine** to deliver the correct signals to the SDA line. <br>2 clock signals are generated, 200khz for system clk and 100khz for the SCL clock that the EEPROM receives.
 The 8 bit data ouputs are mapped to 8 GPIO pins on the board, please check [the contraint file](https://github.com/AndersonHsieh0330/eeprom_reader/blob/master/eeprom_reader.srcs/constrs_1/new/primary.xdc) for more details
 
 ### Simulation
