@@ -7,7 +7,7 @@ each page is 64 bytes
 32K * 8 means there are 32768 addresses and each address stores 8 bits, so total there is 256k = 262144 bits
 address are 15 bits. The verilog models of this project targets 15 bit addresses.
 
-![pic](https://github.com/AndersonHsieh0330/eeprom_reader/blob/master/info/full%20setup.png?raw=true)
+![pic](https://github.com/AndersonHsieh0330/eeprom_reader/blob/master/info/full_setup.jpg?raw=true)
 
 ### How to use
 There are 4 push buttons on the Arty-S7 board, and this project uses 3 user input buttons as follows 
